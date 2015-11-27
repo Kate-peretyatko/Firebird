@@ -1,0 +1,169 @@
+create database 'd:/Turism.fdb' user 'SYSDBA' password 'masterkey';
+commit;
+CONNECT 'd:/Turism.fdb' user 'SYSDBA' password 'masterkey';
+
+create table type (
+ id int primary key,
+ typeName varchar(30) not null
+ );
+
+
+create table place_of_interest (
+ id int primary key,
+ type_id int not null,
+ FOREIGN KEY (type_id) REFERENCES type(id),
+ namePlace varchar(30) not null
+ );
+
+create table hotel (
+ id int primary key,
+ location_hotel varchar(30) not null,
+ stars int not null,
+ language varchar(30) not null
+ );
+
+create table price (
+ id int primary key,
+ adult int not null,
+ child int not null
+ );
+
+create table kurort (
+ id int primary key,
+ location_kurort varchar(30) not null,
+ climate varchar(30) not null,
+ weather varchar(30) not null
+);
+
+
+create table tour (
+ id int primary key,
+ time_tour varchar(30) not null,
+ id_kurort int not null,
+ FOREIGN KEY (id_kurort) REFERENCES kurort(id), 
+ id_hotel int not null,
+ FOREIGN KEY (id_hotel) REFERENCES hotel(id),
+ id_price int not null,
+ FOREIGN KEY (id_price) REFERENCES price(id) 
+);
+ 
+create table insurance (
+ id int primary key,
+ insurance_cases varchar(30) not null,
+ insurance_price int not null
+);
+ 
+create table client (
+ Name varchar(30) not null,
+ Surname varchar(30) not null,
+ number_phone int not null,
+ pasport_id int primary key,
+ insurance_price int not null
+);
+
+ create table trip ( 
+ id_client int not null,
+ FOREIGN KEY (id_client) REFERENCES client(pasport_id), 
+ id_insurance int not null,
+ FOREIGN KEY (id_insurance) REFERENCES insurance(id),
+ id_tour int not null,
+ FOREIGN KEY (id_tour) REFERENCES tour(id), 
+ id_place_of_interest int not null,
+ FOREIGN KEY (id_place_of_interest) REFERENCES place_of_interest(id)
+);
+
+
+ALTER TABLE kurort
+ADD  id_place_of_interest int; 
+
+
+ALTER TABLE kurort
+ADD FOREIGN KEY (id_place_of_interest) REFERENCES place_of_interest(id);
+
+ALTER TABLE trip
+DROP COLUMN id_place_of_interest;
+
+DROP TABLE trip;
+
+create table trip ( 
+ id_client int not null,
+ FOREIGN KEY (id_client) REFERENCES client(pasport_id), 
+ id_insurance int not null,
+ FOREIGN KEY (id_insurance) REFERENCES insurance(id),
+ id_tour int not null,
+ FOREIGN KEY (id_tour) REFERENCES tour(id)
+); 
+
+ALTER TABLE tour
+ADD  excursions varchar(30); 
+
+INSERT INTO TYPE (id, typeName) VALUES (1, 'Tower');
+INSERT INTO TYPE (id, typeName) VALUES (2, 'Ñastle');
+INSERT INTO TYPE (id, typeName) VALUES (3, 'Museum');
+INSERT INTO TYPE (id, typeName) VALUES (4, 'Palace');
+INSERT INTO TYPE (id, typeName) VALUES (5, 'Park');
+
+commit;
+
+INSERT INTO HOTEL (id, location_hotel, stars, language) VALUES (1, 'center', 5, 'English');
+INSERT INTO HOTEL (id, location_hotel, stars, language) VALUES (2, 'center', 3, 'English');
+INSERT INTO HOTEL (id, location_hotel, stars, language) VALUES (3, 'near the sea', 5, 'English');
+INSERT INTO HOTEL (id, location_hotel, stars, language) VALUES (4, 'suburb', 4, 'English');
+
+commit;
+
+INSERT INTO PRICE (id, adult, child) VALUES (1, 25000, 12500);
+INSERT INTO PRICE (id, adult, child) VALUES (2, 50000, 25000);
+INSERT INTO PRICE (id, adult, child) VALUES (3, 75000, 35000);
+INSERT INTO PRICE (id, adult, child) VALUES (4, 25000, 7000);
+
+commit;
+
+INSERT INTO INSURANCE (id, insurance_cases, insurance_price) VALUES (1, 'accident', 500000);
+INSERT INTO INSURANCE (id, insurance_cases, insurance_price) VALUES (2, 'infectious disease', 100000);
+
+commit;
+
+INSERT INTO CLIENT (Name, Surname, number_phone,pasport_id, insurance_price) VALUES ('Masha', 'Petrova', 4608345, 789345, 1);
+INSERT INTO CLIENT (Name, Surname, number_phone,pasport_id, insurance_price) VALUES ('Dasha', 'Vetrova', 4567345, 784567, 2);
+INSERT INTO CLIENT (Name, Surname, number_phone,pasport_id, insurance_price) VALUES ('Ivan', 'Ivanov', 5672341, 744384, 3);
+INSERT INTO CLIENT (Name, Surname, number_phone,pasport_id, insurance_price) VALUES ('Pavel', 'Sidorov', 3848432, 734829, 1);
+INSERT INTO CLIENT (Name, Surname, number_phone,pasport_id, insurance_price) VALUES ('Igor', 'Kuznezov', 7423847, 785499, 2);
+INSERT INTO CLIENT (Name, Surname, number_phone,pasport_id, insurance_price) VALUES ('Anna', 'Alexeeva', 7348957, 783243, 3);
+
+commit;
+
+INSERT INTO PLACE_OF_INTEREST (id, type_id, namePlace) VALUES (1, 1, 'Tower of London');
+INSERT INTO PLACE_OF_INTEREST (id, type_id, namePlace) VALUES (2, 2, 'Hearst Castle');
+INSERT INTO PLACE_OF_INTEREST (id, type_id, namePlace) VALUES (3, 3, 'Museum of fine arts boston');
+INSERT INTO PLACE_OF_INTEREST (id, type_id, namePlace) VALUES (4, 4, 'Crystal Palace');
+INSERT INTO PLACE_OF_INTEREST (id, type_id, namePlace) VALUES (5, 5, 'Park in Paris');
+
+commit;
+
+INSERT INTO KURORT (id, location_kurort, climate, weather, id_place_of_interest) VALUES (1, 'London', 'moderate', 'sun', 1);
+INSERT INTO KURORT (id, location_kurort, climate, weather, id_place_of_interest) VALUES (2, 'Paris', 'moderate', 'rain', 5);
+INSERT INTO KURORT (id, location_kurort, climate, weather, id_place_of_interest) VALUES (3, 'Boston', 'moderate', 'snow', 3);
+
+commit;
+
+INSERT INTO TOUR (id, time_tour, id_kurort, id_hotel, id_price) VALUES (1,'2 week', 1,2,1);
+INSERT INTO TOUR (id, time_tour, id_kurort, id_hotel, id_price) VALUES (2,'1 week', 2,3,3);
+INSERT INTO TOUR (id, time_tour, id_kurort, id_hotel, id_price) VALUES (3,'2 week', 3,4,3);
+
+commit;
+
+INSERT INTO TRIP (id_client, id_insurance, id_tour) VALUES (789345,2,1);
+INSERT INTO TRIP (id_client, id_insurance, id_tour) VALUES (784567,2,2);
+INSERT INTO TRIP (id_client, id_insurance, id_tour) VALUES (744384,2,3);
+INSERT INTO TRIP (id_client, id_insurance, id_tour) VALUES (734829,2,1);
+INSERT INTO TRIP (id_client, id_insurance, id_tour) VALUES (785499,2,2);
+INSERT INTO TRIP (id_client, id_insurance, id_tour) VALUES (783243,2,3);
+
+commit;
+
+
+
+
+
+
